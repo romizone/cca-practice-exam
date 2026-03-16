@@ -4659,21 +4659,22 @@ export const examSets: ExamSet[] = [
               { label: "D", text: "Use real-time API for large documents only." },
             ],
             correctAnswer: "B",
-            explanation: "Pre-identify and pre-chunk oversized documents before batch submission, using custom_id for reassembly. This maximizes first-pass success.",
+            explanation: "Pre-identify and pre-chunk oversized documents before batch submission, using custom_id for reassembly. This maximizes first-pass success. Q# Ans Q# Ans Q# Ans 1 B 21 B 41 B 2 B 22 B 42 B 3 B 23 B 43 B 4 B 24 B 44 B 5 B 25 B 45 B 6 B 26 B 46 B 7 B 27 B 47 B 8 B 28 B 48 B 9 B 29 B 49 B 10 B 30 B 50 B 11 B 31 B 51 B 12 B 32 A 52 B 13 B 33 B 53 B 14 B 34 A 54 B 15 B 35 B 55 B 16 B 36 A 56 B 17 B 37 B 57 B 18 B 38 B 58 B 19 B 39 B 59 B 20 B 40 B 60 B",
           },
         ],
       },
     ],
   },
-  {
-    id: "set6",
-    name: "Bank Soal Set 6",
+
+  { // Set 7
+    id: "set7",
+    name: "Exam Set 7",
     scenarios: [
       {
-        id: 1,
+        id: 61,
         title: `Customer Support Resolution Agent`,
+        domains: "",
         description: "",
-        domains: `Agentic Architecture, Tool Design, Context Management`,
         questions: [
           {
             id: 601,
@@ -4834,10 +4835,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 2,
+        id: 62,
         title: `Multi-Agent Research System`,
+        domains: "",
         description: "",
-        domains: `Agentic Architecture, Tool Design, Context Management`,
         questions: [
           {
             id: 607,
@@ -4974,10 +4975,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 3,
+        id: 63,
         title: `Developer Productivity with Claude`,
+        domains: "",
         description: "",
-        domains: `Agentic Architecture, Tool Design, Claude Code Configuration`,
         questions: [
           {
             id: 612,
@@ -5102,10 +5103,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 4,
+        id: 64,
         title: `Code Generation with Claude Code`,
+        domains: "",
         description: "",
-        domains: `Claude Code Configuration, Context Management`,
         questions: [
           {
             id: 628,
@@ -5230,10 +5231,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 5,
+        id: 65,
         title: `Claude Code for Continuous Integration`,
+        domains: "",
         description: "",
-        domains: `Claude Code Configuration, Prompt Engineering`,
         questions: [
           {
             id: 638,
@@ -5334,10 +5335,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 6,
+        id: 66,
         title: `Structured Data Extraction`,
+        domains: "",
         description: "",
-        domains: `Prompt Engineering, Context Management`,
         questions: [
           {
             id: 643,
@@ -5439,15 +5440,15 @@ export const examSets: ExamSet[] = [
       },
     ],
   },
-  {
-    id: "set7",
-    name: "Bank Soal Set 7",
+  { // Set 8 (Variant B)
+    id: "set8",
+    name: "Exam Set 8",
     scenarios: [
       {
-        id: 1,
+        id: 71,
         title: `Customer Support Resolution Agent`,
+        domains: "",
         description: "",
-        domains: `Agentic Architecture, Tool Design, Context Management`,
         questions: [
           {
             id: 701,
@@ -5608,10 +5609,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 2,
+        id: 72,
         title: `Multi-Agent Research System`,
+        domains: "",
         description: "",
-        domains: `Agentic Architecture, Tool Design, Context Management`,
         questions: [
           {
             id: 707,
@@ -5736,10 +5737,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 3,
+        id: 73,
         title: `Developer Productivity with Claude`,
+        domains: "",
         description: "",
-        domains: `Agentic Architecture, Tool Design, Claude Code Configuration`,
         questions: [
           {
             id: 712,
@@ -5840,10 +5841,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 4,
+        id: 74,
         title: `Claude Code for Continuous Integration`,
+        domains: "",
         description: "",
-        domains: `Claude Code Configuration, Prompt Engineering`,
         questions: [
           {
             id: 715,
@@ -5944,10 +5945,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 5,
+        id: 75,
         title: `Structured Data Extraction`,
+        domains: "",
         description: "",
-        domains: `Prompt Engineering, Context Management`,
         questions: [
           {
             id: 726,
@@ -6096,10 +6097,10 @@ export const examSets: ExamSet[] = [
         ],
       },
       {
-        id: 6,
+        id: 76,
         title: `Code Generation with Claude Code`,
+        domains: "",
         description: "",
-        domains: `Claude Code Configuration, Context Management`,
         questions: [
           {
             id: 728,

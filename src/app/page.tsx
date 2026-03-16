@@ -304,6 +304,40 @@ export default function Home() {
           </div>
 
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Vibe Coding SDLC Bible</h3>
+            <p className="text-xs text-slate-400 mb-4">Seri lengkap panduan Software Development Life Cycle dengan AI</p>
+            <div className="space-y-3">
+              {[
+                { part: 1, title: "Requirements & Planning", desc: "Cara mengumpulkan requirements dan merencanakan proyek dengan bantuan AI", slug: "requirements" },
+                { part: 2, title: "Design & Architecture", desc: "Merancang arsitektur sistem dan design patterns menggunakan AI assistant", slug: "design" },
+                { part: 3, title: "Implementation: Vibe Coding in Action", desc: "Praktik langsung coding dengan AI — dari prompt engineering hingga pair programming", slug: "implementation" },
+                { part: 4, title: "Testing & QA", desc: "Strategi testing komprehensif dengan AI untuk quality assurance yang lebih baik", slug: "testing" },
+                { part: 5, title: "Deployment & DevOps", desc: "CI/CD, infrastructure as code, dan deployment strategies dengan bantuan AI", slug: "deployment" },
+                { part: 6, title: "Maintenance & Iteration (FINALE)", desc: "Maintenance, monitoring, dan iterasi berkelanjutan — penutup seri SDLC Bible", slug: "maintenance" },
+              ].map((item) => (
+                <a
+                  key={item.part}
+                  href={`https://jekardah.com/vibe-coding-sdlc-bible-part${item.part}-${item.slug}.html`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-4 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                >
+                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center shrink-0">
+                    <span className="text-sm font-bold text-indigo-600">{item.part}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-slate-800">{item.title}</div>
+                    <div className="text-xs text-slate-400 truncate">{item.desc}</div>
+                  </div>
+                  <svg className="w-4 h-4 text-slate-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
             <h3 className="text-sm font-semibold text-slate-700 mb-4">Exam Domains</h3>
             <div className="space-y-2 text-sm text-slate-600">
               <div className="flex items-center gap-2">
