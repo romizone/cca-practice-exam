@@ -38,6 +38,7 @@ export default function Home() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [examFinished, setExamFinished] = useState(false);
   const [shuffleQuestions, setShuffleQuestions] = useState(true);
+  const [menuTab, setMenuTab] = useState<"exam" | "panduan">("exam");
   const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -143,7 +144,7 @@ export default function Home() {
   if (mode === "menu") {
     return (
       <div className="min-h-screen p-6 max-w-4xl mx-auto flex flex-col items-center justify-center">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2 text-slate-800">
             CCA Practice Exam
           </h1>
@@ -152,28 +153,35 @@ export default function Home() {
           </p>
           <p className="text-sm text-slate-400 mt-1">60 Questions | 90 Minutes | Passing Score: 720/1000</p>
           <p className="text-xs text-slate-400 mt-1">{examSets.length} exam sets &bull; {examSets.length * 60} total questions</p>
-          <a
-            href="/CCA-Exam-Guide.pdf"
-            download
-            className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 transition-colors"
-          >
-            <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            Exam Guide
-          </a>
-          <a
-            href="/Architects-Playbook.pdf"
-            download
-            className="inline-flex items-center gap-2 mt-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-lg border border-slate-200 transition-colors"
-          >
-            <svg className="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            The Architect&apos;s Playbook
-          </a>
         </div>
 
+        {/* Tab Navigation */}
+        <div className="w-full max-w-md mb-6">
+          <div className="flex border-b border-slate-200">
+            <button
+              onClick={() => setMenuTab("exam")}
+              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                menuTab === "exam"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              Exam
+            </button>
+            <button
+              onClick={() => setMenuTab("panduan")}
+              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                menuTab === "panduan"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              Panduan
+            </button>
+          </div>
+        </div>
+
+        {menuTab === "exam" ? (
         <div className="w-full max-w-md space-y-4">
           {/* User info form */}
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
@@ -257,6 +265,75 @@ export default function Home() {
             Start Exam
           </button>
         </div>
+        ) : (
+        <div className="w-full max-w-md space-y-4">
+          <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Study Materials</h3>
+            <div className="space-y-3">
+              <a
+                href="/CCA-Exam-Guide.pdf"
+                download
+                className="flex items-center gap-3 p-4 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              >
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-slate-800">CCA Exam Guide</div>
+                  <div className="text-xs text-slate-400">Official exam overview, domains &amp; objectives</div>
+                </div>
+              </a>
+              <a
+                href="/Architects-Playbook.pdf"
+                download
+                className="flex items-center gap-3 p-4 rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-colors"
+              >
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-slate-800">The Architect&apos;s Playbook</div>
+                  <div className="text-xs text-slate-400">Architecture patterns, best practices &amp; strategies</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-700 mb-4">Exam Domains</h3>
+            <div className="space-y-2 text-sm text-slate-600">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs font-bold flex items-center justify-center shrink-0">1</span>
+                <span>Claude Model Capabilities &amp; Selection</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs font-bold flex items-center justify-center shrink-0">2</span>
+                <span>Prompt Engineering &amp; Optimization</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs font-bold flex items-center justify-center shrink-0">3</span>
+                <span>API Integration &amp; Architecture</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs font-bold flex items-center justify-center shrink-0">4</span>
+                <span>Agentic &amp; Tool Use Patterns</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs font-bold flex items-center justify-center shrink-0">5</span>
+                <span>Safety, Security &amp; Responsible AI</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs font-bold flex items-center justify-center shrink-0">6</span>
+                <span>Performance, Cost &amp; Scaling</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        )}
       </div>
     );
   }
