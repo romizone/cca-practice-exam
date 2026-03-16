@@ -26,7 +26,42 @@
 
 ## About
 
-A comprehensive practice exam platform designed to help candidates prepare for the **Claude Certified Architect (CCA) &mdash; Foundations** certification exam by Anthropic. This platform simulates the real exam environment with timed assessments, scenario-based questions, and detailed explanations.
+The **Claude Certified Architect (CCA) &mdash; Foundations** certification, developed by [Anthropic](https://www.anthropic.com/), validates that practitioners can make informed decisions about tradeoffs when implementing real-world solutions with Claude. It is the industry's first professional certification for building production-grade applications with large language models.
+
+This practice exam platform is purpose-built to help candidates **prepare effectively** for the CCA Foundations exam. It faithfully replicates the real exam experience &mdash; from the scenario-based question format and 90-minute time constraint to the scaled scoring system (100&ndash;1,000) with a 720 passing threshold.
+
+### Why This Platform?
+
+- **Realistic Exam Simulation** &mdash; Questions are grounded in realistic scenarios drawn from actual production use cases, including building agentic systems for customer support, designing multi-agent research pipelines, integrating Claude Code into CI/CD workflows, and extracting structured data from unstructured documents.
+
+- **Comprehensive Coverage** &mdash; All 5 exam domains are covered with proper weighting: Agentic Architecture & Orchestration (27%), Tool Design & MCP Integration (18%), Claude Code Configuration & Workflows (20%), Prompt Engineering & Structured Output (20%), and Context Management & Reliability (15%).
+
+- **Learn As You Go** &mdash; Every question comes with a detailed explanation that teaches the underlying concept, explains why the correct answer is right, and clarifies why each distractor is wrong. This transforms each practice attempt into an active learning session.
+
+- **Multiple Question Banks** &mdash; With 6 distinct exam sets (360 total questions), candidates can take multiple practice exams without repeating the same questions, ensuring thorough preparation across all topics.
+
+### Who Is This For?
+
+The ideal candidate for the CCA Foundations certification is a **solution architect** who designs and implements production applications with Claude. This platform is designed for professionals with hands-on experience in:
+
+- Building agentic applications using the **Claude Agent SDK**, including multi-agent orchestration, subagent delegation, tool integration, and lifecycle hooks
+- Configuring and customizing **Claude Code** for team workflows using CLAUDE.md files, Agent Skills, MCP server integrations, and plan mode
+- Designing **Model Context Protocol (MCP)** tool and resource interfaces for backend system integration
+- Engineering prompts that produce reliable **structured output**, leveraging JSON schemas, few-shot examples, and extraction patterns
+- Managing **context windows** effectively across long documents, multi-turn conversations, and multi-agent handoffs
+- Integrating Claude into **CI/CD pipelines** for automated code review, test generation, and pull request feedback
+- Making sound **escalation and reliability decisions**, including error handling, human-in-the-loop workflows, and self-evaluation patterns
+
+### Core Technologies Tested
+
+<table>
+<tr>
+<td align="center" width="25%"><strong>Claude Agent SDK</strong><br/><sub>Agent definitions, agentic loops, stop_reason handling, hooks, subagent spawning via Task tool</sub></td>
+<td align="center" width="25%"><strong>Model Context Protocol</strong><br/><sub>MCP servers, tools, resources, isError flag, .mcp.json configuration, environment variables</sub></td>
+<td align="center" width="25%"><strong>Claude Code</strong><br/><sub>CLAUDE.md hierarchy, .claude/rules/, slash commands, skills, plan mode, --resume, /compact</sub></td>
+<td align="center" width="25%"><strong>Claude API</strong><br/><sub>tool_use with JSON schemas, tool_choice options, stop_reason values, Message Batches API</sub></td>
+</tr>
+</table>
 
 ---
 
