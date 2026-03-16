@@ -4666,8 +4666,8 @@ export const examSets: ExamSet[] = [
     ],
   },
   {
-    id: "set7",
-    name: "Exam Set 7",
+    id: "set6",
+    name: "Bank Soal Set 6",
     scenarios: [
       {
         id: 1,
@@ -5440,8 +5440,8 @@ export const examSets: ExamSet[] = [
     ],
   },
   {
-    id: "set8",
-    name: "Exam Set 8 (Variant B)",
+    id: "set7",
+    name: "Bank Soal Set 7",
     scenarios: [
       {
         id: 1,

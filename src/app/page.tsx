@@ -64,8 +64,6 @@ export default function Home() {
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
-            if (timerRef.current) clearInterval(timerRef.current);
-            setExamFinished(true);
             return 0;
           }
           return prev - 1;
@@ -76,6 +74,13 @@ export default function Home() {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [mode, examFinished]);
+
+  // Auto-finish when time runs out
+  useEffect(() => {
+    if (mode === "exam" && !examFinished && timeLeft === 0) {
+      finishExam();
+    }
+  }, [timeLeft, mode, examFinished]);
 
   const finishExam = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -103,8 +108,9 @@ export default function Home() {
 
   const prevQuestion = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-      setShowExplanation(true);
+      const prevIndex = currentIndex - 1;
+      setCurrentIndex(prevIndex);
+      setShowExplanation(answers[prevIndex].selected !== null);
     }
   };
 
@@ -374,7 +380,6 @@ export default function Home() {
         <button
           onClick={() => {
             if (isReview) {
-              setExamFinished(true);
               setMode("exam");
             } else {
               setMode("menu");
