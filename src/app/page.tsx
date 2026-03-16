@@ -419,7 +419,7 @@ export default function Home() {
           const a = answers[i];
           let bg = "bg-slate-200 text-slate-600";
           if (a.selected !== null) {
-            if (isReview || (showExplanation && i <= currentIndex)) {
+            if (isReview) {
               bg = a.selected === q.correctAnswer ? "bg-green-500 text-white" : "bg-red-500 text-white";
             } else {
               bg = "bg-blue-500 text-white";
@@ -506,13 +506,19 @@ export default function Home() {
       {(showExplanation || isReview) && (
         <div
           className={`rounded-xl p-5 mb-4 border ${
-            currentAnswer?.selected === currentQuestion.correctAnswer
+            currentAnswer?.selected == null
+              ? "bg-amber-50 border-amber-200"
+              : currentAnswer.selected === currentQuestion.correctAnswer
               ? "bg-green-50 border-green-200"
               : "bg-red-50 border-red-200"
           }`}
         >
           <div className="flex items-center gap-2 mb-2">
-            {currentAnswer?.selected === currentQuestion.correctAnswer ? (
+            {currentAnswer?.selected == null ? (
+              <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            ) : currentAnswer.selected === currentQuestion.correctAnswer ? (
               <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -523,10 +529,14 @@ export default function Home() {
             )}
             <span
               className={`font-semibold text-sm ${
-                currentAnswer?.selected === currentQuestion.correctAnswer ? "text-green-700" : "text-red-700"
+                currentAnswer?.selected == null
+                  ? "text-amber-600"
+                  : currentAnswer.selected === currentQuestion.correctAnswer ? "text-green-700" : "text-red-700"
               }`}
             >
-              {currentAnswer?.selected === currentQuestion.correctAnswer
+              {currentAnswer?.selected == null
+                ? `Not Answered - Correct Answer: ${currentQuestion.correctAnswer}`
+                : currentAnswer.selected === currentQuestion.correctAnswer
                 ? "Correct!"
                 : `Incorrect - Answer: ${currentQuestion.correctAnswer}`}
             </span>
