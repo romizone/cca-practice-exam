@@ -38,7 +38,7 @@ This practice exam platform is purpose-built to help candidates **prepare effect
 
 - **Learn As You Go** &mdash; Every question comes with a detailed explanation that teaches the underlying concept, explains why the correct answer is right, and clarifies why each distractor is wrong. This transforms each practice attempt into an active learning session.
 
-- **Multiple Question Banks** &mdash; With 6 distinct exam sets (360 total questions), candidates can take multiple practice exams without repeating the same questions, ensuring thorough preparation across all topics.
+- **Multiple Question Banks** &mdash; With 8 distinct exam sets (480 total questions), candidates can take multiple practice exams without repeating the same questions, ensuring thorough preparation across all topics.
 
 ### Who Is This For?
 
@@ -69,7 +69,7 @@ The ideal candidate for the CCA Foundations certification is a **solution archit
 
 | Feature | Description |
 |---------|-------------|
-| **360 Questions** | 6 unique exam sets with 60 questions each |
+| **480 Questions** | 8 unique exam sets with 60 questions each |
 | **90-Minute Timer** | Countdown timer with auto-submit when time expires |
 | **Random Selection** | Randomly selects an exam set for each attempt |
 | **Shuffle Mode** | Optional question order randomization |
