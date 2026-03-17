@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { sql } from "@vercel/postgres";
+import { neon } from "@neondatabase/serverless";
+
+const sql = neon(process.env.DATABASE_URL!);
 
 export async function GET() {
   try {
-    const { rows } = await sql`
+    const rows = await sql`
       SELECT user_name, user_email, user_image, score, correct, total, passed, exam_set, time_spent, created_at
       FROM scores
       ORDER BY score DESC, created_at ASC
@@ -27,7 +29,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { score, correct, total, passed, examSet, timeSpent } = body;
 
-    const { rows } = await sql`
+    const rows = await sql`
       INSERT INTO scores (user_id, user_name, user_email, user_image, score, correct, total, passed, exam_set, time_spent)
       VALUES (
         ${session.user.email},
