@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { examSets, type Scenario, type Question, type ExamSet } from "@/data/exam";
 
 type ExamMode = "menu" | "exam" | "review";
@@ -8,6 +9,19 @@ type ExamMode = "menu" | "exam" | "review";
 interface UserAnswer {
   questionId: number;
   selected: string | null;
+}
+
+interface LeaderboardEntry {
+  user_name: string;
+  user_email: string;
+  user_image: string | null;
+  score: number;
+  correct: number;
+  total: number;
+  passed: boolean;
+  exam_set: string;
+  time_spent: number;
+  created_at: string;
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -28,9 +42,8 @@ function formatTime(seconds: number): string {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession();
   const [mode, setMode] = useState<ExamMode>("menu");
-  const [userName, setUserName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
   const [activeSet, setActiveSet] = useState<ExamSet | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,15 +51,41 @@ export default function Home() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [examFinished, setExamFinished] = useState(false);
   const [shuffleQuestions, setShuffleQuestions] = useState(true);
-  const [menuTab, setMenuTab] = useState<"exam" | "panduan">("exam");
+  const [menuTab, setMenuTab] = useState<"exam" | "panduan" | "leaderboard">("exam");
   const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+  const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
-  const canStart = userName.trim().length > 0 && userEmail.trim().length > 0;
+  const userName = session?.user?.name || "";
+  const userEmail = session?.user?.email || "";
+  const userImage = session?.user?.image || "";
+  const canStart = status === "authenticated";
+
+  const fetchLeaderboard = useCallback(async () => {
+    setLoadingLeaderboard(true);
+    try {
+      const res = await fetch("/api/scores");
+      if (res.ok) {
+        const data = await res.json();
+        setLeaderboard(data);
+      }
+    } catch (e) {
+      console.error("Failed to fetch leaderboard:", e);
+    } finally {
+      setLoadingLeaderboard(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (menuTab === "leaderboard") {
+      fetchLeaderboard();
+    }
+  }, [menuTab, fetchLeaderboard]);
 
   const startExam = () => {
     if (!canStart) return;
-    // Pick a random exam set
     const randomSet = examSets[Math.floor(Math.random() * examSets.length)];
     setActiveSet(randomSet);
     const allQs = randomSet.scenarios.flatMap((s) => s.questions);
@@ -56,6 +95,7 @@ export default function Home() {
     setCurrentIndex(0);
     setShowExplanation(false);
     setExamFinished(false);
+    setScoreSubmitted(false);
     setTimeLeft(EXAM_DURATION);
     setMode("exam");
   };
@@ -76,7 +116,6 @@ export default function Home() {
     };
   }, [mode, examFinished]);
 
-  // Auto-finish when time runs out
   useEffect(() => {
     if (mode === "exam" && !examFinished && timeLeft === 0) {
       finishExam();
@@ -87,6 +126,26 @@ export default function Home() {
     if (timerRef.current) clearInterval(timerRef.current);
     setExamFinished(true);
   };
+
+  const submitScore = useCallback(async (scoreVal: number, correctVal: number, totalVal: number, passedVal: boolean, examSetName: string, timeSpentVal: number) => {
+    try {
+      await fetch("/api/scores", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          score: scoreVal,
+          correct: correctVal,
+          total: totalVal,
+          passed: passedVal,
+          examSet: examSetName,
+          timeSpent: timeSpentVal,
+        }),
+      });
+      setScoreSubmitted(true);
+    } catch (e) {
+      console.error("Failed to submit score:", e);
+    }
+  }, []);
 
   const selectAnswer = (label: string) => {
     if (showExplanation) return;
@@ -169,6 +228,16 @@ export default function Home() {
               Exam
             </button>
             <button
+              onClick={() => setMenuTab("leaderboard")}
+              className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                menuTab === "leaderboard"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              Leaderboard
+            </button>
+            <button
               onClick={() => setMenuTab("panduan")}
               className={`flex-1 py-3 text-sm font-semibold transition-colors ${
                 menuTab === "panduan"
@@ -183,31 +252,48 @@ export default function Home() {
 
         {menuTab === "exam" ? (
         <div className="w-full max-w-md space-y-4">
-          {/* User info form */}
+          {/* Google Sign In */}
           <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
             <h3 className="text-sm font-semibold text-slate-700 mb-4">Candidate Information</h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs text-slate-500 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="Enter your full name"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+            {status === "loading" ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                <span className="ml-3 text-sm text-slate-500">Loading...</span>
               </div>
-              <div>
-                <label className="block text-xs text-slate-500 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
+            ) : session ? (
+              <div className="flex items-center gap-4">
+                {userImage ? (
+                  <img src={userImage} alt="" className="w-12 h-12 rounded-full" referrerPolicy="no-referrer" />
+                ) : (
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span className="text-lg font-bold text-blue-600">{userName.charAt(0).toUpperCase()}</span>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 truncate">{userName}</p>
+                  <p className="text-xs text-slate-400 truncate">{userEmail}</p>
+                </div>
+                <button
+                  onClick={() => signOut()}
+                  className="text-xs text-slate-400 hover:text-red-500 transition-colors"
+                >
+                  Sign out
+                </button>
               </div>
-            </div>
+            ) : (
+              <button
+                onClick={() => signIn("google")}
+                className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span className="text-sm font-medium text-slate-700">Sign in with Google</span>
+              </button>
+            )}
           </div>
 
           {/* Exam info */}
@@ -262,8 +348,89 @@ export default function Home() {
             disabled={!canStart}
             className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 text-white font-semibold rounded-xl transition-colors text-lg"
           >
-            Start Exam
+            {status === "authenticated" ? "Start Exam" : "Sign in to Start"}
           </button>
+        </div>
+        ) : menuTab === "leaderboard" ? (
+        <div className="w-full max-w-md space-y-4">
+          <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-slate-700">Top Scores</h3>
+              <button
+                onClick={fetchLeaderboard}
+                className="text-xs text-blue-500 hover:text-blue-700 transition-colors"
+              >
+                Refresh
+              </button>
+            </div>
+            {loadingLeaderboard ? (
+              <div className="space-y-3">
+                {[1,2,3,4,5].map(i => (
+                  <div key={i} className="flex items-center gap-3 animate-pulse">
+                    <div className="w-8 h-8 bg-slate-200 rounded-full" />
+                    <div className="flex-1">
+                      <div className="h-3 bg-slate-200 rounded w-24 mb-1" />
+                      <div className="h-2 bg-slate-100 rounded w-16" />
+                    </div>
+                    <div className="h-4 bg-slate-200 rounded w-12" />
+                  </div>
+                ))}
+              </div>
+            ) : leaderboard.length === 0 ? (
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <p className="text-sm text-slate-400">No scores yet. Be the first!</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {leaderboard.map((entry, i) => {
+                  const isMe = session?.user?.email === entry.user_email;
+                  const rankBg = i === 0 ? "bg-yellow-400 text-yellow-900" : i === 1 ? "bg-slate-300 text-slate-700" : i === 2 ? "bg-amber-600 text-white" : "bg-slate-100 text-slate-500";
+                  return (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
+                        isMe ? "bg-blue-50 border border-blue-200" : "hover:bg-slate-50"
+                      }`}
+                    >
+                      <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${rankBg}`}>
+                        {i + 1}
+                      </span>
+                      {entry.user_image ? (
+                        <img src={entry.user_image} alt="" className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
+                      ) : (
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-blue-600">{entry.user_name?.charAt(0).toUpperCase()}</span>
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-800 truncate">
+                          {entry.user_name}
+                          {isMe && <span className="text-xs text-blue-500 ml-1">(you)</span>}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {new Date(entry.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className={`text-sm font-bold ${entry.passed ? "text-green-600" : "text-red-500"}`}>
+                          {entry.score}
+                        </span>
+                        <p className="text-xs text-slate-400">{entry.correct}/{entry.total}</p>
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
+                        entry.passed ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"
+                      }`}>
+                        {entry.passed ? "PASS" : "FAIL"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
         ) : (
         <div className="w-full max-w-md space-y-4">
@@ -377,15 +544,24 @@ export default function Home() {
     const percentage = Math.round((score.correct / score.total) * 1000);
     const passed = percentage >= 720;
 
+    // Submit score once
+    if (!scoreSubmitted && session) {
+      submitScore(percentage, score.correct, score.total, passed, activeSet?.name || "", timeSpent);
+    }
+
     return (
       <div className="min-h-screen p-6 max-w-4xl mx-auto">
         {/* User card */}
         <div className="bg-white rounded-xl p-6 mt-8 mb-6 border border-slate-200 shadow-sm text-center">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            <span className="text-2xl font-bold text-blue-600">
-              {userName.trim().charAt(0).toUpperCase()}
-            </span>
-          </div>
+          {userImage ? (
+            <img src={userImage} alt="" className="w-16 h-16 rounded-full mx-auto mb-3" referrerPolicy="no-referrer" />
+          ) : (
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <span className="text-2xl font-bold text-blue-600">
+                {userName.trim().charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
           <h2 className="text-xl font-bold text-slate-800">{userName}</h2>
           <p className="text-sm text-slate-500">{userEmail}</p>
           {activeSet && (
@@ -412,6 +588,9 @@ export default function Home() {
           <p className="text-slate-400 mt-1">
             Time: {formatTime(timeSpent)} / {formatTime(EXAM_DURATION)}
           </p>
+          {scoreSubmitted && (
+            <p className="text-xs text-green-500 mt-2">Score saved to leaderboard</p>
+          )}
         </div>
 
         <div className="bg-white rounded-xl p-6 mb-6 border border-slate-200 shadow-sm">
