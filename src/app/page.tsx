@@ -546,6 +546,21 @@ export default function Home() {
                   <div className="text-xs text-slate-400">Architecture patterns, best practices &amp; strategies</div>
                 </div>
               </a>
+              <a
+                href="/AI-Solution-Architect-Study-Handbook.pdf"
+                download
+                className="flex items-center gap-3 p-4 rounded-lg border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-colors"
+              >
+                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-slate-800">AI Solution Architect Study Handbook</div>
+                  <div className="text-xs text-slate-400">100+ pages — All 5 domains, scenarios &amp; practice questions</div>
+                </div>
+              </a>
             </div>
           </div>
 
